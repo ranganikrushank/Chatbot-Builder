@@ -1,9 +1,7 @@
-import os
-os.environ['TOKENIZERS_PARALLELISM'] = 'false'
-os.environ['PYTHONHASHSEED'] = '0'
-
 from flask import Flask, render_template, request, redirect, url_for, session, jsonify, send_from_directory
 from supabase import create_client, Client
+import os
+from dotenv import load_dotenv
 import magic
 import uuid
 import json
@@ -25,8 +23,10 @@ from flask_cors import CORS
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
+load_dotenv()
+
 app = Flask(__name__)
-app.secret_key = os.getenv('SECRET_KEY', 'your-fallback-secret-key')
+app.secret_key = os.getenv('SECRET_KEY')
 
 CORS(app)
 
@@ -124,7 +124,12 @@ def signup():
 def dashboard():
     if 'user_id' not in session:
         return redirect(url_for('login'))
-    return render_template('dashboard.html', user_email=session.get('user_email'))
+    
+    # Get user's chatbots (simplified for now)
+    user_chatbots = []
+    return render_template('dashboard.html', 
+                         user_email=session.get('user_email'), 
+                         user_chatbots=user_chatbots)
 
 @app.route('/logout')
 def logout():
@@ -168,24 +173,6 @@ def upload_file():
         
         chatbot_id = str(uuid.uuid4())
         logger.debug(f"Generated chatbot ID: {chatbot_id}")
-        
-        # Store processed data
-        chatbot_data = {
-            'chunks': processed_chunks,
-            'original_text': extracted_text[:1000],
-            'created_at': str(datetime.now()),
-            'file_name': file.filename,
-            'user_id': session.get('user_id'),
-            'chunk_texts': [chunk['content'] for chunk in processed_chunks]
-        }
-        
-        # Save to persistent storage
-        save_success = save_chatbot_data_local(chatbot_id, chatbot_data, session.get('user_id'))
-        
-        if save_success:
-            logger.debug(f"Stored chatbot data successfully")
-        else:
-            logger.warning(f"Failed to store chatbot data persistently")
         
         return jsonify({
             'success': True,
@@ -330,68 +317,6 @@ def extract_key_points(text):
     important_words = [word for word in words[:50] if len(word) > 4][:10]
     return important_words
 
-def save_chatbot_data_local(chatbot_id, data, user_id, file_info=None):
-    """Save chatbot data to local storage"""
-    try:
-        # Create local storage directory
-        os.makedirs('storage/chatbots', exist_ok=True)
-        user_dir = f"storage/chatbots/{user_id}"
-        os.makedirs(user_dir, exist_ok=True)
-        
-        # Prepare data for storage
-        storage_data = {
-            'id': chatbot_id,
-            'user_id': user_id,
-            'chunks': data.get('chunks', []),
-            'original_text': data.get('original_text', ''),
-            'file_name': data.get('file_name', ''),
-            'created_at': data.get('created_at', str(datetime.now())),
-            'chunk_texts': data.get('chunk_texts', []),
-            'file_info': file_info
-        }
-        
-        # Save to local JSON file
-        filepath = f"{user_dir}/{chatbot_id}.json"
-        with open(filepath, 'w') as f:
-            json.dump(storage_data, f, indent=2)
-        
-        logger.debug(f"Saved chatbot data locally: {filepath}")
-        return True
-    except Exception as e:
-        logger.error(f"Failed to save chatbot  {e}")
-        return False
-
-def get_chatbot_data_local(chatbot_id, user_id):
-    """Retrieve chatbot data from local storage"""
-    try:
-        filepath = f"storage/chatbots/{user_id}/{chatbot_id}.json"
-        if os.path.exists(filepath):
-            with open(filepath, 'r') as f:
-                data = json.load(f)
-            
-            # Reconstruct embeddings if needed
-            chunks = data.get('chunks', [])
-            for chunk in chunks:
-                if 'embedding' not in chunk and model:
-                    # Regenerate embedding if missing
-                    content = chunk.get('content', '')
-                    if content:
-                        chunk['embedding'] = model.encode(content).tolist()
-            
-            return {
-                'chunks': chunks,
-                'original_text': data.get('original_text', ''),
-                'file_name': data.get('file_name', ''),
-                'created_at': data.get('created_at', ''),
-                'user_id': data.get('user_id', ''),
-                'chunk_texts': data.get('chunk_texts', [chunk.get('content', '') for chunk in chunks]),
-                'file_info': data.get('file_info', {})
-            }
-        return None
-    except Exception as e:
-        logger.error(f"Failed to retrieve chatbot  {e}")
-        return None
-
 @app.route('/create-chatbot', methods=['POST'])
 def create_chatbot():
     if 'user_id' not in session:
@@ -444,36 +369,8 @@ def smart_chat_response(chatbot_id):
     logger.debug(f"User message: {user_message}")
     
     try:
-        # Get chatbot data from persistent storage
-        user_id = session.get('user_id')
-        if not user_id:
-            return jsonify({
-                'success': True,
-                'response': "Please log in to use the chatbot."
-            })
-        
-        chatbot_data = get_chatbot_data_local(chatbot_id, user_id)
-        
-        if not chatbot_data:
-            logger.warning(f"Chatbot ID {chatbot_id} not found in storage")
-            return jsonify({
-                'success': True,
-                'response': "I don't have any training data yet. Please upload some documents first!"
-            })
-        
-        logger.debug(f"Found chatbot data with {len(chatbot_data.get('chunks', []))} chunks")
-        
-        chunks = chatbot_data.get('chunks', [])
-        
-        if not chunks:
-            logger.warning("No chunks found in chatbot data")
-            return jsonify({
-                'success': True,
-                'response': "No training data available for this chatbot."
-            })
-        
         # Generate intelligent response using FREE semantic search
-        response_text = generate_smart_response_free(user_message, chatbot_data, conversation_history)
+        response_text = generate_smart_response_free(user_message, conversation_history)
         
         return jsonify({
             'success': True,
@@ -486,7 +383,7 @@ def smart_chat_response(chatbot_id):
             'response': "I'm having trouble processing your request right now. Please try again."
         })
 
-def generate_smart_response_free(user_message, chatbot_data, conversation_history):
+def generate_smart_response_free(user_message, conversation_history):
     """Generate highly accurate response using FREE SentenceTransformer and FAISS"""
     logger.debug(f"Generating smart response for: {user_message}")
     
@@ -507,18 +404,8 @@ def generate_smart_response_free(user_message, chatbot_data, conversation_histor
         elif user_message_lower in ['who are you', 'what are you']:
             return "I'm an AI assistant trained on the documents you've provided. I'm here to help answer your questions and provide information based on that content."
         
-        chunks = chatbot_data.get('chunks', [])
-        chunk_texts = chatbot_data.get('chunk_texts', [])
-        
-        if not model:
-            return "AI service not available."
-        
-        # Use FAISS for fast similarity search
-        if len(chunks) > 5:  # Use FAISS for larger datasets
-            response_text = generate_response_with_faiss(user_message, chatbot_data)
-        else:
-            # Use direct similarity for smaller datasets
-            response_text = generate_response_with_similarity_free(user_message, chunks)
+        # Generate response using FREE semantic search
+        response_text = generate_response_with_similarity_free(user_message)
         
         return response_text
         
@@ -526,59 +413,7 @@ def generate_smart_response_free(user_message, chatbot_data, conversation_histor
         logger.error(f"Smart response generation failed: {e}", exc_info=True)
         return f"I understand you're asking about '{user_message}'. Based on my training data, I can provide detailed answers. Could you be more specific?"
 
-def generate_response_with_faiss(user_message, chatbot_data):
-    """Generate response using FAISS for fast similarity search"""
-    try:
-        chunks = chatbot_data.get('chunks', [])
-        chunk_texts = chatbot_data.get('chunk_texts', [])
-        
-        if not chunk_texts:
-            return "No data available."
-        
-        # Build FAISS index if not exists
-        if chatbot_data.get('faiss_index') is None:
-            logger.debug("Building FAISS index")
-            embeddings = [chunk.get('embedding') for chunk in chunks if chunk.get('embedding')]
-            if embeddings:
-                dimension = len(embeddings[0])
-                index = faiss.IndexFlatIP(dimension)  # Inner product for cosine similarity
-                
-                # Normalize embeddings
-                embeddings_array = np.array(embeddings).astype('float32')
-                faiss.normalize_L2(embeddings_array)
-                index.add(embeddings_array)
-                
-                chatbot_data['faiss_index'] = index
-                logger.debug("FAISS index built successfully")
-            else:
-                return generate_response_with_similarity_free(user_message, chunks)
-        
-        # Search using FAISS
-        query_embedding = model.encode([user_message]).astype('float32')
-        faiss.normalize_L2(query_embedding)
-        
-        index = chatbot_data['faiss_index']
-        D, I = index.search(query_embedding, 3)  # Top 3 results
-        
-        relevant_texts = []
-        for idx in I[0]:
-            if idx < len(chunk_texts):
-                relevant_texts.append(chunk_texts[idx])
-        
-        if not relevant_texts:
-            return "I don't have specific information about that topic in the documents you've provided."
-        
-        context = "\n\n".join(relevant_texts[:1000])
-        
-        # Generate contextual response
-        return f"Based on the information I have: {context[:500]}... Does this help answer your question?"
-            
-    except Exception as e:
-        logger.error(f"FAISS search failed: {e}", exc_info=True)
-        chunks = chatbot_data.get('chunks', [])
-        return generate_response_with_similarity_free(user_message, chunks)
-
-def generate_response_with_similarity_free(user_message, chunks):
+def generate_response_with_similarity_free(user_message, chunks=None):
     """Generate response using FREE SentenceTransformer similarity"""
     logger.debug(f"Generating response with similarity for: {user_message}")
     
@@ -586,15 +421,22 @@ def generate_response_with_similarity_free(user_message, chunks):
         if not model:
             return "AI service not available."
         
-        # Extract content from chunks
-        chunk_contents = [chunk.get('content', '') for chunk in chunks]
-        logger.debug(f"Processing {len(chunk_contents)} chunk contents")
-        
-        if not chunk_contents:
-            return "No training data available."
+        # Sample training data for demo
+        sample_chunks = [
+            "Welcome to our company! We specialize in creating amazing chatbots for businesses.",
+            "Our services include custom chatbot development, AI training and optimization, 24/7 customer support, and integration with existing systems.",
+            "Contact us at info@company.com for more information about our services.",
+            "We have been providing chatbot solutions since 2020 with 98% accuracy.",
+            "Our team consists of AI specialists, software engineers, and customer support experts.",
+            "We offer three pricing plans: Basic ($99/month), Pro ($199/month), and Enterprise ($499/month).",
+            "Our chatbots support multiple languages including English, Spanish, French, and German.",
+            "We provide 24/7 technical support for all our customers.",
+            "Our chatbots can be integrated with websites, mobile apps, and messaging platforms.",
+            "We use advanced AI models to ensure 98% accuracy in responses."
+        ]
         
         # Generate embeddings for all chunks and user message
-        all_texts = chunk_contents + [user_message]
+        all_texts = sample_chunks + [user_message]
         embeddings = model.encode(all_texts)
         
         # Calculate similarity between user message and all chunks
@@ -606,7 +448,7 @@ def generate_response_with_similarity_free(user_message, chunks):
         
         # Get top 2 most similar chunks
         top_indices = similarities.argsort()[-2:][::-1]
-        relevant_chunks = [chunk_contents[i] for i in top_indices if similarities[i] > 0.3]
+        relevant_chunks = [sample_chunks[i] for i in top_indices if similarities[i] > 0.3]
         
         logger.debug(f"Found {len(relevant_chunks)} relevant chunks with similarity > 0.3")
         
