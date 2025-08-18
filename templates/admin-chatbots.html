@@ -1,0 +1,150 @@
+{% extends "admin-base.html" %}
+
+{% block title %}Chatbots{% endblock %}
+{% block page_title %}Chatbot Management{% endblock %}
+
+{% block content %}
+    <div class="mb-6">
+        <h2 class="text-2xl font-bold text-gray-900">Chatbot Management</h2>
+        <p class="text-gray-600 mt-1">View and manage all created chatbots</p>
+    </div>
+    
+    {% if error %}
+    <div class="mb-6 bg-red-50 border border-red-200 rounded-lg p-4">
+        <div class="flex items-center">
+            <i class="fas fa-exclamation-circle text-red-500 mr-2"></i>
+            <div>
+                <h3 class="font-medium text-red-800">Error Loading Chatbots</h3>
+                <p class="text-sm text-red-700 mt-1">{{ error }}</p>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+    
+    <div class="stat-card rounded-2xl p-6">
+        <div class="overflow-hidden">
+            {% if chatbots %}
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Chatbot</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">File Name</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">User ID</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Chunks</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Created At</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        {% for chatbot in chatbots %}
+                        <tr class="hover:bg-gray-50">
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="flex items-center">
+                                    <div class="h-10 w-10 rounded-lg bg-purple-100 flex items-center justify-center mr-3">
+                                        <i class="fas fa-robot text-purple-600"></i>
+                                    </div>
+                                    <div>
+                                        <div class="text-sm font-medium text-gray-900">{{ chatbot.id[:8] }}...</div>
+                                        <div class="text-xs text-gray-500">ID: {{ chatbot.id[:6] }}...</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm text-gray-900">{{ chatbot.file_name or 'Unnamed' }}</div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm text-gray-900">{{ chatbot.user_id[:8] }}...</div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                    {{ chatbot.chunks_count or 0 }} chunks
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                {{ chatbot.created_at[:10] if chatbot.created_at else 'Unknown' }}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                <button class="text-indigo-600 hover:text-indigo-900 mr-3">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button class="text-red-600 hover:text-red-900">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="text-center py-12">
+                <i class="fas fa-robot text-gray-300 text-4xl mb-4"></i>
+                <h3 class="text-lg font-medium text-gray-900 mb-2">No Chatbots Found</h3>
+                <p class="text-gray-500 mb-6">There are no chatbots created in the system yet.</p>
+                <a href="{{ url_for('dashboard') }}" 
+                   class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700">
+                    <i class="fas fa-plus mr-2"></i>
+                    Create Your First Chatbot
+                </a>
+            </div>
+            {% endif %}
+        </div>
+        
+        {% if chatbots %}
+        <div class="bg-gray-50 px-6 py-4 border-t border-gray-200">
+            <p class="text-sm text-gray-700">
+                Showing <span class="font-medium">{{ chatbots|length }}</span> chatbots
+            </p>
+        </div>
+        {% endif %}
+    </div>
+    
+    <!-- Statistics -->
+    <div class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+            <div class="flex items-center">
+                <div class="h-12 w-12 rounded-lg bg-blue-100 flex items-center justify-center mr-4">
+                    <i class="fas fa-robot text-blue-600 text-xl"></i>
+                </div>
+                <div>
+                    <p class="text-2xl font-bold text-gray-900">{{ chatbots|length }}</p>
+                    <p class="text-sm text-gray-600">Total Chatbots</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+            <div class="flex items-center">
+                <div class="h-12 w-12 rounded-lg bg-green-100 flex items-center justify-center mr-4">
+                    <i class="fas fa-database text-green-600 text-xl"></i>
+                </div>
+                <div>
+                    <p class="text-2xl font-bold text-gray-900">
+                        {% set total_chunks = chatbots|sum(attribute='chunks_count') %}
+                        {{ total_chunks }}
+                    </p>
+                    <p class="text-sm text-gray-600">Total Chunks</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+            <div class="flex items-center">
+                <div class="h-12 w-12 rounded-lg bg-purple-100 flex items-center justify-center mr-4">
+                    <i class="fas fa-users text-purple-600 text-xl"></i>
+                </div>
+                <div>
+                    {% set unique_users = {} %}
+                    {% for chatbot in chatbots %}
+                        {% if chatbot.user_id not in unique_users %}
+                            {% set _ = unique_users.update({chatbot.user_id: true}) %}
+                        {% endif %}
+                    {% endfor %}
+                    <p class="text-2xl font-bold text-gray-900">{{ unique_users|length }}</p>
+                    <p class="text-sm text-gray-600">Active Users</p>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

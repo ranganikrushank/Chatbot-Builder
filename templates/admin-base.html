@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Admin Dashboard{% endblock %} | Chatbot Builder</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#eff6ff',
+                            100: '#dbeafe',
+                            200: '#bfdbfe',
+                            300: '#93c5fd',
+                            400: '#60a5fa',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                            800: '#1e40af',
+                            900: '#1e3a8a',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+        }
+        
+        .sidebar {
+            transition: all 0.3s ease;
+        }
+        
+        .sidebar-item {
+            transition: all 0.2s ease;
+        }
+        
+        .sidebar-item:hover {
+            background-color: rgba(59, 130, 246, 0.1);
+            transform: translateX(5px);
+        }
+        
+        .sidebar-item.active {
+            background: linear-gradient(90deg, rgba(59, 130, 246, 0.2) 0%, rgba(59, 130, 246, 0.05) 100%);
+            border-left: 4px solid #3b82f6;
+        }
+        
+        .card {
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        
+        .stat-card {
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+        
+        .notification-badge {
+            animation: bounce 1s infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-5px);
+            }
+        }
+        
+        .table-row {
+            transition: all 0.2s ease;
+        }
+        
+        .table-row:hover {
+            background-color: rgba(59, 130, 246, 0.05);
+        }
+        
+        .btn-primary {
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 6px rgba(59, 130, 246, 0.25);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(59, 130, 246, 0.35);
+        }
+        
+        .status-indicator {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+        
+        .status-active {
+            background-color: #10b981;
+            box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.3);
+        }
+        
+        .status-pending {
+            background-color: #f59e0b;
+            box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.3);
+        }
+        
+        .status-inactive {
+            background-color: #ef4444;
+            box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.3);
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <div class="flex min-h-screen">
+        <!-- Sidebar -->
+        <div class="sidebar w-64 bg-white shadow-lg fixed h-full z-10">
+            <div class="p-5 border-b border-gray-200">
+                <div class="flex items-center space-x-3">
+                    <div class="h-12 w-12 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center">
+                        <i class="fas fa-robot text-white text-xl"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-bold text-gray-800">Chatbot Admin</h1>
+                        <p class="text-xs text-gray-500">Dashboard</p>
+                    </div>
+                </div>
+            </div>
+            
+            <nav class="p-4">
+                <ul class="space-y-2">
+                    <li>
+                        <a href="{{ url_for('admin_dashboard') }}" class="sidebar-item {% if request.endpoint == 'admin_dashboard' %}active text-blue-600{% else %}text-gray-700 hover:text-blue-600{% endif %} flex items-center p-3 rounded-lg">
+                            <i class="fas fa-home mr-3 text-lg"></i>
+                            <span class="font-medium">Dashboard</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ url_for('admin_users') }}" class="sidebar-item {% if request.endpoint == 'admin_users' %}active text-blue-600{% else %}text-gray-700 hover:text-blue-600{% endif %} flex items-center p-3 rounded-lg">
+                            <i class="fas fa-users mr-3 text-lg"></i>
+                            <span class="font-medium">User Management</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ url_for('admin_chatbots') }}" class="sidebar-item {% if request.endpoint == 'admin_chatbots' %}active text-blue-600{% else %}text-gray-700 hover:text-blue-600{% endif %} flex items-center p-3 rounded-lg">
+                            <i class="fas fa-robot mr-3 text-lg"></i>
+                            <span class="font-medium">Chatbots</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ url_for('admin_analytics') }}" class="sidebar-item {% if request.endpoint == 'admin_analytics' %}active text-blue-600{% else %}text-gray-700 hover:text-blue-600{% endif %} flex items-center p-3 rounded-lg">
+                            <i class="fas fa-chart-line mr-3 text-lg"></i>
+                            <span class="font-medium">Analytics</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ url_for('admin_files') }}" class="sidebar-item {% if request.endpoint == 'admin_files' %}active text-blue-600{% else %}text-gray-700 hover:text-blue-600{% endif %} flex items-center p-3 rounded-lg">
+                            <i class="fas fa-file-alt mr-3 text-lg"></i>
+                            <span class="font-medium">Files</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ url_for('admin_chat_history') }}" class="sidebar-item {% if request.endpoint == 'admin_chat_history' %}active text-blue-600{% else %}text-gray-700 hover:text-blue-600{% endif %} flex items-center p-3 rounded-lg">
+                            <i class="fas fa-comments mr-3 text-lg"></i>
+                            <span class="font-medium">Chat History</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ url_for('admin_settings') }}" class="sidebar-item {% if request.endpoint == 'admin_settings' %}active text-blue-600{% else %}text-gray-700 hover:text-blue-600{% endif %} flex items-center p-3 rounded-lg">
+                            <i class="fas fa-cog mr-3 text-lg"></i>
+                            <span class="font-medium">Settings</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ url_for('admin_roles') }}" class="sidebar-item {% if request.endpoint == 'admin_roles' %}active text-blue-600{% else %}text-gray-700 hover:text-blue-600{% endif %} flex items-center p-3 rounded-lg">
+                            <i class="fas fa-user-tag mr-3 text-lg"></i>
+                            <span class="font-medium">Roles</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ url_for('admin_backup') }}" class="sidebar-item {% if request.endpoint == 'admin_backup' %}active text-blue-600{% else %}text-gray-700 hover:text-blue-600{% endif %} flex items-center p-3 rounded-lg">
+                            <i class="fas fa-save mr-3 text-lg"></i>
+                            <span class="font-medium">Backup</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ url_for('admin_api_keys') }}" class="sidebar-item {% if request.endpoint == 'admin_api_keys' %}active text-blue-600{% else %}text-gray-700 hover:text-blue-600{% endif %} flex items-center p-3 rounded-lg">
+                            <i class="fas fa-key mr-3 text-lg"></i>
+                            <span class="font-medium">API Keys</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ url_for('admin_notifications') }}" class="sidebar-item {% if request.endpoint == 'admin_notifications' %}active text-blue-600{% else %}text-gray-700 hover:text-blue-600{% endif %} flex items-center p-3 rounded-lg">
+                            <i class="fas fa-bell mr-3 text-lg"></i>
+                            <span class="font-medium">Notifications</span>
+                            <span class="ml-auto bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center notification-badge">3</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ url_for('admin_performance') }}" class="sidebar-item {% if request.endpoint == 'admin_performance' %}active text-blue-600{% else %}text-gray-700 hover:text-blue-600{% endif %} flex items-center p-3 rounded-lg">
+                            <i class="fas fa-tachometer-alt mr-3 text-lg"></i>
+                            <span class="font-medium">Performance</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ url_for('admin_audit_log') }}" class="sidebar-item {% if request.endpoint == 'admin_audit_log' %}active text-blue-600{% else %}text-gray-700 hover:text-blue-600{% endif %} flex items-center p-3 rounded-lg">
+                            <i class="fas fa-clipboard-list mr-3 text-lg"></i>
+                            <span class="font-medium">Audit Log</span>
+                        </a>
+                    </li>
+                </ul>
+                
+                <div class="mt-8 pt-4 border-t border-gray-200">
+                    <a href="{{ url_for('admin_logout') }}" class="sidebar-item flex items-center p-3 rounded-lg text-gray-700 hover:text-red-600">
+                        <i class="fas fa-sign-out-alt mr-3 text-lg"></i>
+                        <span class="font-medium">Logout</span>
+                    </a>
+                </div>
+            </nav>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="flex-1 ml-64">
+            <!-- Header -->
+            <header class="bg-white shadow-sm sticky top-0 z-10">
+                <div class="flex items-center justify-between p-4">
+                    <div class="flex items-center">
+                        <h1 class="text-2xl font-bold text-gray-800">{% block page_title %}Admin Dashboard{% endblock %}</h1>
+                        <span class="ml-4 px-3 py-1 bg-green-100 text-green-800 text-xs font-medium rounded-full">Live</span>
+                    </div>
+                    
+                    <div class="flex items-center space-x-4">
+                        <div class="relative">
+                            <button class="p-2 rounded-full hover:bg-gray-100">
+                                <i class="fas fa-bell text-gray-600"></i>
+                                <span class="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">3</span>
+                            </button>
+                        </div>
+                        
+                        <div class="flex items-center space-x-3">
+                            <div class="h-10 w-10 rounded-full bg-gradient-to-br from-blue-400 to-indigo-600 flex items-center justify-center text-white font-bold cursor-pointer">
+                                {{ admin_username[0] }}
+                            </div>
+                            <div>
+                                <p class="text-sm font-medium text-gray-800">{{ admin_username }}</p>
+                                <p class="text-xs text-gray-500">Administrator</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+            
+            <!-- Main Content Area -->
+            <main class="p-6">
+                {% block content %}{% endblock %}
+            </main>
+        </div>
+    </div>
+    
+    <script>
+        // Simple notification dismissal
+        document.addEventListener('DOMContentLoaded', function() {
+            const notificationBadges = document.querySelectorAll('.notification-badge');
+            notificationBadges.forEach(badge => {
+                badge.addEventListener('click', function() {
+                    this.parentElement.style.display = 'none';
+                });
+            });
+        });
+    </script>
+</body>
+</html>

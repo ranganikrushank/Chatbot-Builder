@@ -1,0 +1,154 @@
+{% extends "admin-base.html" %}
+
+{% block title %}Notifications{% endblock %}
+{% block page_title %}System Notifications{% endblock %}
+
+{% block content %}
+    <div class="mb-6 flex justify-between items-center">
+        <div>
+            <h2 class="text-2xl font-bold text-gray-900">Notifications</h2>
+            <p class="text-gray-600 mt-1">Manage system notifications and alerts</p>
+        </div>
+        <button class="btn-primary px-4 py-2 bg-blue-600 text-white rounded-lg font-medium flex items-center">
+            <i class="fas fa-bell mr-2"></i>
+            Send Notification
+        </button>
+    </div>
+    
+    <!-- Notification Filters -->
+    <div class="stat-card rounded-2xl p-6 mb-6">
+        <div class="flex flex-wrap gap-4">
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Type</label>
+                <select class="border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <option>All Types</option>
+                    <option>Information</option>
+                    <option>Warning</option>
+                    <option>Error</option>
+                    <option>Critical</option>
+                </select>
+            </div>
+            
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Status</label>
+                <select class="border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <option>All Statuses</option>
+                    <option>Unread</option>
+                    <option>Read</option>
+                    <option>Archived</option>
+                </select>
+            </div>
+            
+            <div class="flex items-end">
+                <button class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg font-medium">Filter</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Notifications List -->
+    <div class="space-y-4">
+        <div class="stat-card rounded-2xl p-6">
+            <div class="flex items-start">
+                <div class="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center mr-4 flex-shrink-0">
+                    <i class="fas fa-info-circle text-blue-600"></i>
+                </div>
+                <div class="flex-1">
+                    <div class="flex justify-between">
+                        <h3 class="text-lg font-medium text-gray-900">New Feature: Advanced Analytics</h3>
+                        <span class="text-sm text-gray-500">2 hours ago</span>
+                    </div>
+                    <p class="text-gray-700 mt-2">We've added advanced analytics to help you better understand your chatbot performance.</p>
+                    <div class="mt-3 flex items-center">
+                        <span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">Information</span>
+                        <span class="ml-2 px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full">Unread</span>
+                    </div>
+                </div>
+            </div>
+            <div class="flex justify-end mt-4 space-x-3">
+                <button class="px-3 py-1 text-sm bg-gray-100 text-gray-700 rounded-lg">Mark as Read</button>
+                <button class="px-3 py-1 text-sm bg-gray-100 text-gray-700 rounded-lg">Archive</button>
+            </div>
+        </div>
+        
+        <div class="stat-card rounded-2xl p-6">
+            <div class="flex items-start">
+                <div class="h-10 w-10 rounded-full bg-yellow-100 flex items-center justify-center mr-4 flex-shrink-0">
+                    <i class="fas fa-exclamation-triangle text-yellow-600"></i>
+                </div>
+                <div class="flex-1">
+                    <div class="flex justify-between">
+                        <h3 class="text-lg font-medium text-gray-900">Storage Usage Warning</h3>
+                        <span class="text-sm text-gray-500">1 day ago</span>
+                    </div>
+                    <p class="text-gray-700 mt-2">Your storage usage is at 85%. Consider upgrading your plan or cleaning up old files.</p>
+                    <div class="mt-3 flex items-center">
+                        <span class="px-2 py-1 bg-yellow-100 text-yellow-800 text-xs rounded-full">Warning</span>
+                        <span class="ml-2 px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full">Unread</span>
+                    </div>
+                </div>
+            </div>
+            <div class="flex justify-end mt-4 space-x-3">
+                <button class="px-3 py-1 text-sm bg-gray-100 text-gray-700 rounded-lg">Mark as Read</button>
+                <button class="px-3 py-1 text-sm bg-gray-100 text-gray-700 rounded-lg">Archive</button>
+            </div>
+        </div>
+        
+        <div class="stat-card rounded-2xl p-6">
+            <div class="flex items-start">
+                <div class="h-10 w-10 rounded-full bg-green-100 flex items-center justify-center mr-4 flex-shrink-0">
+                    <i class="fas fa-check-circle text-green-600"></i>
+                </div>
+                <div class="flex-1">
+                    <div class="flex justify-between">
+                        <h3 class="text-lg font-medium text-gray-900">Backup Completed Successfully</h3>
+                        <span class="text-sm text-gray-500">2 days ago</span>
+                    </div>
+                    <p class="text-gray-700 mt-2">Your daily backup completed successfully. All data has been safely stored.</p>
+                    <div class="mt-3 flex items-center">
+                        <span class="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full">Success</span>
+                        <span class="ml-2 px-2 py-1 bg-gray-100 text-gray-800 text-xs rounded-full">Read</span>
+                    </div>
+                </div>
+            </div>
+            <div class="flex justify-end mt-4 space-x-3">
+                <button class="px-3 py-1 text-sm bg-gray-100 text-gray-700 rounded-lg">Archive</button>
+            </div>
+        </div>
+        
+        <div class="stat-card rounded-2xl p-6">
+            <div class="flex items-start">
+                <div class="h-10 w-10 rounded-full bg-red-100 flex items-center justify-center mr-4 flex-shrink-0">
+                    <i class="fas fa-exclamation-circle text-red-600"></i>
+                </div>
+                <div class="flex-1">
+                    <div class="flex justify-between">
+                        <h3 class="text-lg font-medium text-gray-900">Critical: Database Connection Issue</h3>
+                        <span class="text-sm text-gray-500">3 days ago</span>
+                    </div>
+                    <p class="text-gray-700 mt-2">We detected intermittent database connection issues. Our team is investigating.</p>
+                    <div class="mt-3 flex items-center">
+                        <span class="px-2 py-1 bg-red-100 text-red-800 text-xs rounded-full">Critical</span>
+                        <span class="ml-2 px-2 py-1 bg-gray-100 text-gray-800 text-xs rounded-full">Read</span>
+                    </div>
+                </div>
+            </div>
+            <div class="flex justify-end mt-4 space-x-3">
+                <button class="px-3 py-1 text-sm bg-gray-100 text-gray-700 rounded-lg">Archive</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Pagination -->
+    <div class="mt-6 flex items-center justify-between">
+        <div class="text-sm text-gray-700">
+            Showing <span class="font-medium">1</span> to <span class="font-medium">4</span> of <span class="font-medium">24</span> notifications
+        </div>
+        <div class="flex space-x-2">
+            <button class="px-3 py-1 text-sm bg-gray-100 text-gray-700 rounded-lg">Previous</button>
+            <button class="px-3 py-1 text-sm bg-blue-100 text-blue-700 rounded-lg">1</button>
+            <button class="px-3 py-1 text-sm bg-gray-100 text-gray-700 rounded-lg">2</button>
+            <button class="px-3 py-1 text-sm bg-gray-100 text-gray-700 rounded-lg">3</button>
+            <button class="px-3 py-1 text-sm bg-gray-100 text-gray-700 rounded-lg">Next</button>
+        </div>
+    </div>
+{% endblock %}

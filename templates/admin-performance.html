@@ -1,0 +1,187 @@
+{% extends "admin-base.html" %}
+
+{% block title %}Performance{% endblock %}
+{% block page_title %}Performance Monitoring{% endblock %}
+
+{% block content %}
+    <div class="mb-6">
+        <h2 class="text-2xl font-bold text-gray-900">Performance Monitoring</h2>
+        <p class="text-gray-600 mt-1">Monitor system performance and resource usage</p>
+    </div>
+    
+    <!-- Performance Metrics -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div class="stat-card rounded-2xl p-6">
+            <div class="flex justify-between items-start">
+                <div>
+                    <p class="text-sm font-medium text-gray-500">CPU Usage</p>
+                    <h3 class="text-3xl font-bold text-gray-900 mt-2">42%</h3>
+                </div>
+                <div class="h-12 w-12 rounded-xl bg-blue-100 flex items-center justify-center">
+                    <i class="fas fa-microchip text-blue-600 text-xl"></i>
+                </div>
+            </div>
+            <div class="mt-4">
+                <div class="w-full bg-gray-200 rounded-full h-2.5">
+                    <div class="bg-blue-600 h-2.5 rounded-full" style="width: 42%"></div>
+                </div>
+                <div class="flex justify-between text-xs text-gray-500 mt-1">
+                    <span>0%</span>
+                    <span>100%</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="stat-card rounded-2xl p-6">
+            <div class="flex justify-between items-start">
+                <div>
+                    <p class="text-sm font-medium text-gray-500">Memory Usage</p>
+                    <h3 class="text-3xl font-bold text-gray-900 mt-2">68%</h3>
+                </div>
+                <div class="h-12 w-12 rounded-xl bg-green-100 flex items-center justify-center">
+                    <i class="fas fa-memory text-green-600 text-xl"></i>
+                </div>
+            </div>
+            <div class="mt-4">
+                <div class="w-full bg-gray-200 rounded-full h-2.5">
+                    <div class="bg-green-600 h-2.5 rounded-full" style="width: 68%"></div>
+                </div>
+                <div class="flex justify-between text-xs text-gray-500 mt-1">
+                    <span>0%</span>
+                    <span>100%</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="stat-card rounded-2xl p-6">
+            <div class="flex justify-between items-start">
+                <div>
+                    <p class="text-sm font-medium text-gray-500">Disk Usage</p>
+                    <h3 class="text-3xl font-bold text-gray-900 mt-2">82%</h3>
+                </div>
+                <div class="h-12 w-12 rounded-xl bg-purple-100 flex items-center justify-center">
+                    <i class="fas fa-hdd text-purple-600 text-xl"></i>
+                </div>
+            </div>
+            <div class="mt-4">
+                <div class="w-full bg-gray-200 rounded-full h-2.5">
+                    <div class="bg-purple-600 h-2.5 rounded-full" style="width: 82%"></div>
+                </div>
+                <div class="flex justify-between text-xs text-gray-500 mt-1">
+                    <span>0%</span>
+                    <span>100%</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="stat-card rounded-2xl p-6">
+            <div class="flex justify-between items-start">
+                <div>
+                    <p class="text-sm font-medium text-gray-500">Network IO</p>
+                    <h3 class="text-3xl font-bold text-gray-900 mt-2">1.2 GB</h3>
+                </div>
+                <div class="h-12 w-12 rounded-xl bg-yellow-100 flex items-center justify-center">
+                    <i class="fas fa-network-wired text-yellow-600 text-xl"></i>
+                </div>
+            </div>
+            <div class="mt-4">
+                <div class="w-full bg-gray-200 rounded-full h-2.5">
+                    <div class="bg-yellow-600 h-2.5 rounded-full" style="width: 75%"></div>
+                </div>
+                <div class="flex justify-between text-xs text-gray-500 mt-1">
+                    <span>0</span>
+                    <span>5 GB</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Performance Charts -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+        <div class="stat-card rounded-2xl p-6">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4">CPU Usage Over Time</h3>
+            <div class="h-64 flex items-center justify-center bg-gray-50 rounded-lg">
+                <div class="text-center">
+                    <i class="fas fa-chart-line text-gray-300 text-4xl mb-2"></i>
+                    <p class="text-gray-500">CPU usage chart</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="stat-card rounded-2xl p-6">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4">Memory Usage Over Time</h3>
+            <div class="h-64 flex items-center justify-center bg-gray-50 rounded-lg">
+                <div class="text-center">
+                    <i class="fas fa-chart-bar text-gray-300 text-4xl mb-2"></i>
+                    <p class="text-gray-500">Memory usage chart</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- System Information -->
+    <div class="stat-card rounded-2xl p-6 mb-8">
+        <h3 class="text-lg font-semibold text-gray-900 mb-4">System Information</h3>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+                <h4 class="font-medium text-gray-900 mb-3">Hardware</h4>
+                <div class="space-y-3">
+                    <div class="flex justify-between">
+                        <span class="text-gray-600">CPU</span>
+                        <span class="font-medium">Intel Xeon E5-2673 v4</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-600">Memory</span>
+                        <span class="font-medium">16 GB DDR4</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-600">Storage</span>
+                        <span class="font-medium">500 GB SSD</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-600">Architecture</span>
+                        <span class="font-medium">x86_64</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div>
+                <h4 class="font-medium text-gray-900 mb-3">Software</h4>
+                <div class="space-y-3">
+                    <div class="flex justify-between">
+                        <span class="text-gray-600">OS</span>
+                        <span class="font-medium">Ubuntu 20.04 LTS</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-600">Kernel</span>
+                        <span class="font-medium">5.4.0-1097-azure</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-600">Python</span>
+                        <span class="font-medium">3.9.16</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-600">Flask</span>
+                        <span class="font-medium">2.3.3</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Uptime -->
+    <div class="stat-card rounded-2xl p-6">
+        <h3 class="text-lg font-semibold text-gray-900 mb-4">System Uptime</h3>
+        
+        <div class="flex items-center">
+            <div class="h-16 w-16 rounded-full bg-green-100 flex items-center justify-center mr-4">
+                <i class="fas fa-clock text-green-600 text-2xl"></i>
+            </div>
+            <div>
+                <p class="text-2xl font-bold text-gray-900">12 days, 14 hours, 23 minutes</p>
+                <p class="text-gray-600">Since January 3, 2024 09:37 AM</p>
+            </div>
+        </div>
+    </div>
+{% endblock %}

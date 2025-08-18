@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="min-h-screen bg-gray-50">
+    <div class="max-w-4xl mx-auto p-8">
+        <div class="bg-white rounded-lg shadow-sm p-6 mb-8">
+            <h1 class="text-3xl font-bold text-gray-900 mb-4">Test Your Chatbot</h1>
+            <p class="text-gray-600 mb-6">Your chatbot widget will appear in the bottom right corner!</p>
+            
+            <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+                <div class="flex items-start">
+                    <i class="fas fa-info-circle text-blue-500 mr-2 mt-0.5"></i>
+                    <div>
+                        <h3 class="font-medium text-blue-800">How to Test:</h3>
+                        <p class="text-sm text-blue-700 mt-1">Click the chatbot icon in the bottom right corner and start chatting!</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6">
+                <div class="flex items-start">
+                    <i class="fas fa-exclamation-triangle text-yellow-500 mr-2 mt-0.5"></i>
+                    <div>
+                        <h3 class="font-medium text-yellow-800">Chatbot ID: {{ chatbot_id or 'feddc508-c6e1-4803-b864-4925693fd7fb' }}</h3>
+                        <p class="text-sm text-yellow-700 mt-1">Make sure this chatbot has been created and has training data.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-gray-50 border border-gray-200 rounded-lg p-4">
+                <h3 class="font-semibold text-gray-800 mb-2">Sample Questions to Try:</h3>
+                <p class="text-gray-600">Ask your chatbot these types of questions:</p>
+                <ul class="list-disc list-inside text-gray-600 space-y-1 mt-2">
+                    <li>"Hello" or "Hi there"</li>
+                    <li>"What can you help me with?"</li>
+                    <li>"Tell me about the content you know"</li>
+                    <li>"How do I use this service?"</li>
+                    <li>Questions about your uploaded documents</li>
+                </ul>
+            </div>
+            
+            <div class="mt-6 text-center">
+                <a href="{{ url_for('dashboard') }}" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-indigo-700 bg-indigo-100 hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    <i class="fas fa-arrow-left mr-2"></i>
+                    Back to Dashboard
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Smart Chatbot Embed Code -->
+<script>
+window.chatbotConfig = {
+    id: '{{ chatbot_id or "feddc508-c6e1-4803-b864-4925693fd7fb" }}',
+    name: '{{ chatbot_name or "Demo Chatbot" }}',
+    websiteUrl: window.location.origin,
+    apiUrl: window.location.origin
+};
+</script>
+<script src="/static/js/smart-chatbot.js"></script>
+<!-- End Smart Chatbot Embed Code -->
+
+<!-- Debug information -->
+<script>
+console.log('Chatbot Config:', window.chatbotConfig);
+console.log('API URL:', window.chatbotConfig.apiUrl);
+console.log('Chatbot ID:', window.chatbotConfig.id);
+
+// Test connection
+fetch(window.chatbotConfig.apiUrl + '/health')
+    .then(response => response.json())
+    .then(data => console.log('Backend health:', data))
+    .catch(error => console.log('Backend connection test failed:', error));
+</script>
+{% endblock %}

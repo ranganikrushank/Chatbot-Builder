@@ -1,0 +1,156 @@
+{% extends "admin-base.html" %}
+
+{% block title %}Chat History{% endblock %}
+{% block page_title %}Chat Conversations{% endblock %}
+
+{% block content %}
+    <div class="mb-6">
+        <h2 class="text-2xl font-bold text-gray-900">Chat History</h2>
+        <p class="text-gray-600 mt-1">Review chat conversations and interactions</p>
+    </div>
+    
+    <!-- Filters -->
+    <div class="stat-card rounded-2xl p-6 mb-6">
+        <div class="flex flex-wrap gap-4">
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">User</label>
+                <select class="border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <option>All Users</option>
+                    <option>John Doe</option>
+                    <option>Sarah Johnson</option>
+                    <option>Mike Lee</option>
+                </select>
+            </div>
+            
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Date Range</label>
+                <select class="border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <option>Last 7 Days</option>
+                    <option>Last 30 Days</option>
+                    <option>Last 90 Days</option>
+                </select>
+            </div>
+            
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Chatbot</label>
+                <select class="border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <option>All Chatbots</option>
+                    <option>Customer Support Bot</option>
+                    <option>HR Assistant</option>
+                    <option>IT Helpdesk</option>
+                </select>
+            </div>
+            
+            <div class="flex items-end">
+                <button class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg font-medium">Filter</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Chat Conversations -->
+    <div class="space-y-6">
+        <div class="stat-card rounded-2xl p-6">
+            <div class="flex justify-between items-center mb-4">
+                <div>
+                    <h3 class="text-lg font-semibold text-gray-900">Conversation with John Doe</h3>
+                    <p class="text-sm text-gray-500">Customer Support Bot • Jan 15, 2024</p>
+                </div>
+                <div class="flex space-x-2">
+                    <button class="p-2 text-gray-500 hover:text-blue-600">
+                        <i class="fas fa-download"></i>
+                    </button>
+                    <button class="p-2 text-gray-500 hover:text-red-600">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="space-y-4">
+                <div class="flex justify-start">
+                    <div class="max-w-3/4">
+                        <div class="bg-gray-100 rounded-2xl rounded-tl-none p-4">
+                            <p class="text-gray-800">Hello, I have a question about my order.</p>
+                        </div>
+                        <p class="text-xs text-gray-500 mt-1">10:30 AM</p>
+                    </div>
+                </div>
+                
+                <div class="flex justify-end">
+                    <div class="max-w-3/4">
+                        <div class="bg-blue-100 rounded-2xl rounded-tr-none p-4">
+                            <p class="text-gray-800">Hi John! I'd be happy to help. Could you please provide your order number?</p>
+                        </div>
+                        <p class="text-xs text-gray-500 mt-1 text-right">10:31 AM</p>
+                    </div>
+                </div>
+                
+                <div class="flex justify-start">
+                    <div class="max-w-3/4">
+                        <div class="bg-gray-100 rounded-2xl rounded-tl-none p-4">
+                            <p class="text-gray-800">Sure, it's #ORD-789456</p>
+                        </div>
+                        <p class="text-xs text-gray-500 mt-1">10:32 AM</p>
+                    </div>
+                </div>
+                
+                <div class="flex justify-end">
+                    <div class="max-w-3/4">
+                        <div class="bg-blue-100 rounded-2xl rounded-tr-none p-4">
+                            <p class="text-gray-800">Thank you! I'm looking up your order now. I can see that your order #ORD-789456 was shipped yesterday and is expected to arrive by Friday.</p>
+                        </div>
+                        <p class="text-xs text-gray-500 mt-1 text-right">10:33 AM</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="stat-card rounded-2xl p-6">
+            <div class="flex justify-between items-center mb-4">
+                <div>
+                    <h3 class="text-lg font-semibold text-gray-900">Conversation with Sarah Johnson</h3>
+                    <p class="text-sm text-gray-500">HR Assistant • Jan 14, 2024</p>
+                </div>
+                <div class="flex space-x-2">
+                    <button class="p-2 text-gray-500 hover:text-blue-600">
+                        <i class="fas fa-download"></i>
+                    </button>
+                    <button class="p-2 text-gray-500 hover:text-red-600">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="space-y-4">
+                <div class="flex justify-start">
+                    <div class="max-w-3/4">
+                        <div class="bg-gray-100 rounded-2xl rounded-tl-none p-4">
+                            <p class="text-gray-800">Hi, I'd like to request time off next week.</p>
+                        </div>
+                        <p class="text-xs text-gray-500 mt-1">2:15 PM</p>
+                    </div>
+                </div>
+                
+                <div class="flex justify-end">
+                    <div class="max-w-3/4">
+                        <div class="bg-blue-100 rounded-2xl rounded-tr-none p-4">
+                            <p class="text-gray-800">Hello Sarah! I can help with that. Could you please specify the dates you're requesting off and the reason for your leave?</p>
+                        </div>
+                        <p class="text-xs text-gray-500 mt-1 text-right">2:16 PM</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Pagination -->
+    <div class="mt-6 flex items-center justify-between">
+        <div class="text-sm text-gray-700">
+            Showing <span class="font-medium">1</span> to <span class="font-medium">2</span> of <span class="font-medium">2</span> conversations
+        </div>
+        <div class="flex space-x-2">
+            <button class="px-3 py-1 text-sm bg-gray-100 text-gray-700 rounded-lg">Previous</button>
+            <button class="px-3 py-1 text-sm bg-blue-100 text-blue-700 rounded-lg">1</button>
+            <button class="px-3 py-1 text-sm bg-gray-100 text-gray-700 rounded-lg">Next</button>
+        </div>
+    </div>
+{% endblock %}

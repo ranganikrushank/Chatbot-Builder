@@ -1,0 +1,153 @@
+{% extends "admin-base.html" %}
+
+{% block title %}Backup{% endblock %}
+{% block page_title %}Backup Management{% endblock %}
+
+{% block content %}
+    <div class="mb-6 flex justify-between items-center">
+        <div>
+            <h2 class="text-2xl font-bold text-gray-900">Backup Management</h2>
+            <p class="text-gray-600 mt-1">Create and manage system backups</p>
+        </div>
+        <button class="btn-primary px-4 py-2 bg-blue-600 text-white rounded-lg font-medium flex items-center">
+            <i class="fas fa-plus mr-2"></i>
+            Create Backup
+        </button>
+    </div>
+    
+    <!-- Backup Summary -->
+    <div class="stat-card rounded-2xl p-6 mb-6">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div class="p-4 bg-blue-50 rounded-lg">
+                <p class="text-sm text-gray-600">Last Backup</p>
+                <p class="text-xl font-bold text-gray-900 mt-1">Jan 15, 2024</p>
+            </div>
+            
+            <div class="p-4 bg-green-50 rounded-lg">
+                <p class="text-sm text-gray-600">Total Backups</p>
+                <p class="text-xl font-bold text-gray-900 mt-1">12</p>
+            </div>
+            
+            <div class="p-4 bg-purple-50 rounded-lg">
+                <p class="text-sm text-gray-600">Total Size</p>
+                <p class="text-xl font-bold text-gray-900 mt-1">24.8 GB</p>
+            </div>
+            
+            <div class="p-4 bg-yellow-50 rounded-lg">
+                <p class="text-sm text-gray-600">Storage Used</p>
+                <p class="text-xl font-bold text-gray-900 mt-1">82%</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Backup Schedule -->
+    <div class="stat-card rounded-2xl p-6 mb-6">
+        <h3 class="text-lg font-semibold text-gray-900 mb-4">Backup Schedule</h3>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Frequency</label>
+                <select class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <option>Daily</option>
+                    <option>Weekly</option>
+                    <option>Monthly</option>
+                </select>
+            </div>
+            
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Time</label>
+                <input type="time" value="02:00" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            </div>
+            
+            <div class="flex items-end">
+                <button class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg font-medium">Update Schedule</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Backup History -->
+    <div class="stat-card rounded-2xl p-6">
+        <h3 class="text-lg font-semibold text-gray-900 mb-4">Backup History</h3>
+        
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Backup</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Size</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    <tr class="table-row">
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="text-sm font-medium text-gray-900">Backup Jan 15, 2024</div>
+                            <div class="text-sm text-gray-500">backup_20240115</div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Jan 15, 2024 02:00 AM</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">2.4 GB</td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                Completed
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                            <a href="#" class="text-blue-600 hover:text-blue-900 mr-3">Download</a>
+                            <a href="#" class="text-red-600 hover:text-red-900">Delete</a>
+                        </td>
+                    </tr>
+                    
+                    <tr class="table-row">
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="text-sm font-medium text-gray-900">Backup Jan 14, 2024</div>
+                            <div class="text-sm text-gray-500">backup_20240114</div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Jan 14, 2024 02:00 AM</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">2.3 GB</td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                Completed
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                            <a href="#" class="text-blue-600 hover:text-blue-900 mr-3">Download</a>
+                            <a href="#" class="text-red-600 hover:text-red-900">Delete</a>
+                        </td>
+                    </tr>
+                    
+                    <tr class="table-row">
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="text-sm font-medium text-gray-900">Backup Jan 13, 2024</div>
+                            <div class="text-sm text-gray-500">backup_20240113</div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Jan 13, 2024 02:00 AM</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">2.2 GB</td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                Completed
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                            <a href="#" class="text-blue-600 hover:text-blue-900 mr-3">Download</a>
+                            <a href="#" class="text-red-600 hover:text-red-900">Delete</a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- Pagination -->
+        <div class="mt-6 flex items-center justify-between">
+            <div class="text-sm text-gray-700">
+                Showing <span class="font-medium">1</span> to <span class="font-medium">3</span> of <span class="font-medium">12</span> backups
+            </div>
+            <div class="flex space-x-2">
+                <button class="px-3 py-1 text-sm bg-gray-100 text-gray-700 rounded-lg">Previous</button>
+                <button class="px-3 py-1 text-sm bg-blue-100 text-blue-700 rounded-lg">1</button>
+                <button class="px-3 py-1 text-sm bg-gray-100 text-gray-700 rounded-lg">Next</button>
+            </div>
+        </div>
+    </div>
+{% endblock %}

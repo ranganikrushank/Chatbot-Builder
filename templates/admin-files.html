@@ -1,0 +1,154 @@
+{% extends "admin-base.html" %}
+
+{% block title %}Files{% endblock %}
+{% block page_title %}File Management{% endblock %}
+
+{% block content %}
+    <div class="mb-6 flex justify-between items-center">
+        <div>
+            <h2 class="text-2xl font-bold text-gray-900">File Management</h2>
+            <p class="text-gray-600 mt-1">Manage uploaded files and documents</p>
+        </div>
+        <button class="btn-primary px-4 py-2 bg-blue-600 text-white rounded-lg font-medium flex items-center">
+            <i class="fas fa-upload mr-2"></i>
+            Upload File
+        </button>
+    </div>
+    
+    <!-- Filters -->
+    <div class="stat-card rounded-2xl p-6 mb-6">
+        <div class="flex flex-wrap gap-4">
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">File Type</label>
+                <select class="border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <option>All Types</option>
+                    <option>PDF</option>
+                    <option>Word Document</option>
+                    <option>Text File</option>
+                </select>
+            </div>
+            
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Date Range</label>
+                <select class="border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <option>Last 7 Days</option>
+                    <option>Last 30 Days</option>
+                    <option>Last 90 Days</option>
+                </select>
+            </div>
+            
+            <div class="flex items-end">
+                <button class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg font-medium">Filter</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Files Table -->
+    <div class="stat-card rounded-2xl p-6">
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">File</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Size</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Uploaded</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    <tr class="table-row">
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="flex items-center">
+                                <div class="h-10 w-10 rounded-lg bg-red-100 flex items-center justify-center mr-3">
+                                    <i class="fas fa-file-pdf text-red-600"></i>
+                                </div>
+                                <div>
+                                    <div class="text-sm font-medium text-gray-900">Company Policy Manual</div>
+                                    <div class="text-sm text-gray-500">policy-manual.pdf</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">PDF</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">2.4 MB</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">2024-01-15</td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                Processed
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                            <a href="#" class="text-blue-600 hover:text-blue-900 mr-3">View</a>
+                            <a href="#" class="text-red-600 hover:text-red-900">Delete</a>
+                        </td>
+                    </tr>
+                    
+                    <tr class="table-row">
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="flex items-center">
+                                <div class="h-10 w-10 rounded-lg bg-blue-100 flex items-center justify-center mr-3">
+                                    <i class="fas fa-file-word text-blue-600"></i>
+                                </div>
+                                <div>
+                                    <div class="text-sm font-medium text-gray-900">Product Catalog</div>
+                                    <div class="text-sm text-gray-500">catalog.docx</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Word Document</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">5.1 MB</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">2024-01-14</td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                Processed
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                            <a href="#" class="text-blue-600 hover:text-blue-900 mr-3">View</a>
+                            <a href="#" class="text-red-600 hover:text-red-900">Delete</a>
+                        </td>
+                    </tr>
+                    
+                    <tr class="table-row">
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="flex items-center">
+                                <div class="h-10 w-10 rounded-lg bg-gray-100 flex items-center justify-center mr-3">
+                                    <i class="fas fa-file-alt text-gray-600"></i>
+                                </div>
+                                <div>
+                                    <div class="text-sm font-medium text-gray-900">FAQ Document</div>
+                                    <div class="text-sm text-gray-500">faq.txt</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Text File</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">0.8 MB</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">2024-01-13</td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                Processed
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                            <a href="#" class="text-blue-600 hover:text-blue-900 mr-3">View</a>
+                            <a href="#" class="text-red-600 hover:text-red-900">Delete</a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- Pagination -->
+        <div class="mt-6 flex items-center justify-between">
+            <div class="text-sm text-gray-700">
+                Showing <span class="font-medium">1</span> to <span class="font-medium">3</span> of <span class="font-medium">3</span> results
+            </div>
+            <div class="flex space-x-2">
+                <button class="px-3 py-1 text-sm bg-gray-100 text-gray-700 rounded-lg">Previous</button>
+                <button class="px-3 py-1 text-sm bg-blue-100 text-blue-700 rounded-lg">1</button>
+                <button class="px-3 py-1 text-sm bg-gray-100 text-gray-700 rounded-lg">Next</button>
+            </div>
+        </div>
+    </div>
+{% endblock %}

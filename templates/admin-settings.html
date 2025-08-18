@@ -1,0 +1,152 @@
+{% extends "admin-base.html" %}
+
+{% block title %}Settings{% endblock %}
+{% block page_title %}System Settings{% endblock %}
+
+{% block content %}
+    <div class="mb-6">
+        <h2 class="text-2xl font-bold text-gray-900">System Settings</h2>
+        <p class="text-gray-600 mt-1">Configure platform preferences and system parameters</p>
+    </div>
+    
+    {% if success %}
+    <div class="mb-6 bg-green-50 border border-green-200 rounded-lg p-4">
+        <div class="flex items-center">
+            <i class="fas fa-check-circle text-green-500 mr-2"></i>
+            <div>
+                <h3 class="font-medium text-green-800">Settings Updated</h3>
+                <p class="text-sm text-green-700 mt-1">{{ success }}</p>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+    
+    {% if error %}
+    <div class="mb-6 bg-red-50 border border-red-200 rounded-lg p-4">
+        <div class="flex items-center">
+            <i class="fas fa-exclamation-circle text-red-500 mr-2"></i>
+            <div>
+                <h3 class="font-medium text-red-800">Error</h3>
+                <p class="text-sm text-red-700 mt-1">{{ error }}</p>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+    
+    <form method="POST" class="space-y-6">
+        <!-- General Settings -->
+        <div class="stat-card rounded-2xl p-6">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4">General Settings</h3>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Platform Name</label>
+                    <input type="text" name="platform_name" value="{{ settings.platform_name or 'Chatbot Builder' }}" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Support Email</label>
+                    <input type="email" name="support_email" value="{{ settings.support_email or 'support@example.com' }}" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Max File Size</label>
+                    <select name="max_file_size" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <option value="50MB" {% if settings.max_file_size == '50MB' %}selected{% endif %}>50MB</option>
+                        <option value="100MB" {% if settings.max_file_size == '100MB' %}selected{% endif %}>100MB</option>
+                        <option value="200MB" {% if settings.max_file_size == '200MB' %}selected{% endif %}>200MB</option>
+                        <option value="500MB" {% if settings.max_file_size == '500MB' %}selected{% endif %}>500MB</option>
+                    </select>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Default AI Model</label>
+                    <select name="ai_model" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <option value="all-MiniLM-L6-v2" {% if settings.ai_model == 'all-MiniLM-L6-v2' %}selected{% endif %}>all-MiniLM-L6-v2 (Recommended)</option>
+                        <option value="paraphrase-MiniLM-L6-v2" {% if settings.ai_model == 'paraphrase-MiniLM-L6-v2' %}selected{% endif %}>paraphrase-MiniLM-L6-v2</option>
+                        <option value="multi-qa-MiniLM-L6-cos-v1" {% if settings.ai_model == 'multi-qa-MiniLM-L6-cos-v1' %}selected{% endif %}>multi-qa-MiniLM-L6-cos-v1</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Storage Settings -->
+        <div class="stat-card rounded-2xl p-6">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4">Storage Settings</h3>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Storage Provider</label>
+                    <select name="storage_provider" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <option value="azure" {% if settings.storage_provider == 'azure' %}selected{% endif %}>Azure Blob Storage</option>
+                        <option value="aws" {% if settings.storage_provider == 'aws' %}selected{% endif %}>Amazon S3</option>
+                        <option value="local" {% if settings.storage_provider == 'local' %}selected{% endif %}>Local Storage</option>
+                    </select>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Storage Container</label>
+                    <input type="text" name="storage_container" value="{{ settings.storage_container or 'chatbot-files' }}" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Backup Frequency</label>
+                    <select name="backup_frequency" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <option value="daily" {% if settings.backup_frequency == 'daily' %}selected{% endif %}>Daily</option>
+                        <option value="weekly" {% if settings.backup_frequency == 'weekly' %}selected{% endif %}>Weekly</option>
+                        <option value="monthly" {% if settings.backup_frequency == 'monthly' %}selected{% endif %}>Monthly</option>
+                    </select>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Retention Period</label>
+                    <select name="retention_period" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <option value="30" {% if settings.retention_period == '30' %}selected{% endif %}>30 Days</option>
+                        <option value="90" {% if settings.retention_period == '90' %}selected{% endif %}>90 Days</option>
+                        <option value="365" {% if settings.retention_period == '365' %}selected{% endif %}>1 Year</option>
+                        <option value="0" {% if settings.retention_period == '0' %}selected{% endif %}>Forever</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Security Settings -->
+        <div class="stat-card rounded-2xl p-6">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4">Security Settings</h3>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Session Timeout (minutes)</label>
+                    <input type="number" name="session_timeout" value="{{ settings.session_timeout or 30 }}" min="5" max="1440" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Password Complexity</label>
+                    <select name="password_complexity" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <option value="low" {% if settings.password_complexity == 'low' %}selected{% endif %}>Low (6+ characters)</option>
+                        <option value="medium" {% if settings.password_complexity == 'medium' %}selected{% endif %}>Medium (8+ characters, 1 number)</option>
+                        <option value="high" {% if settings.password_complexity == 'high' %}selected{% endif %}>High (10+ characters, mixed case, numbers, symbols)</option>
+                    </select>
+                </div>
+                
+                <div class="flex items-center">
+                    <input type="checkbox" name="enable_2fa" id="enable_2fa" class="h-4 w-4 text-blue-600 rounded focus:ring-blue-500" {% if settings.enable_2fa %}checked{% endif %}>
+                    <label for="enable_2fa" class="ml-2 block text-sm text-gray-700">Enable Two-Factor Authentication</label>
+                </div>
+                
+                <div class="flex items-center">
+                    <input type="checkbox" name="enable_audit_logging" id="enable_audit_logging" class="h-4 w-4 text-blue-600 rounded focus:ring-blue-500" {% if settings.enable_audit_logging %}checked{% endif %}>
+                    <label for="enable_audit_logging" class="ml-2 block text-sm text-gray-700">Enable Audit Logging</label>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Save Button -->
+        <div class="flex justify-end">
+            <button type="submit" class="btn-primary px-6 py-3 bg-blue-600 text-white rounded-lg font-medium">
+                <i class="fas fa-save mr-2"></i>
+                Save Settings
+            </button>
+        </div>
+    </form>
+{% endblock %}

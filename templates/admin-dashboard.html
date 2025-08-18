@@ -1,0 +1,175 @@
+{% extends "admin-base.html" %}
+
+{% block title %}Dashboard{% endblock %}
+{% block page_title %}Admin Dashboard{% endblock %}
+
+{% block content %}
+    <!-- Stats Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div class="stat-card rounded-2xl p-6">
+            <div class="flex justify-between items-start">
+                <div>
+                    <p class="text-sm font-medium text-gray-500">Total Users</p>
+                    <h3 class="text-3xl font-bold text-gray-900 mt-2">{{ total_users or 0 }}</h3>
+                    <p class="text-sm text-green-600 mt-1">
+                        <i class="fas fa-arrow-up mr-1"></i>12.5% from last month
+                    </p>
+                </div>
+                <div class="h-12 w-12 rounded-xl bg-blue-100 flex items-center justify-center">
+                    <i class="fas fa-users text-blue-600 text-xl"></i>
+                </div>
+            </div>
+        </div>
+        
+        <div class="stat-card rounded-2xl p-6">
+            <div class="flex justify-between items-start">
+                <div>
+                    <p class="text-sm font-medium text-gray-500">Active Chatbots</p>
+                    <h3 class="text-3xl font-bold text-gray-900 mt-2">{{ total_chatbots or 0 }}</h3>
+                    <p class="text-sm text-green-600 mt-1">
+                        <i class="fas fa-arrow-up mr-1"></i>8.3% from last month
+                    </p>
+                </div>
+                <div class="h-12 w-12 rounded-xl bg-green-100 flex items-center justify-center">
+                    <i class="fas fa-robot text-green-600 text-xl"></i>
+                </div>
+            </div>
+        </div>
+        
+        <div class="stat-card rounded-2xl p-6">
+            <div class="flex justify-between items-start">
+                <div>
+                    <p class="text-sm font-medium text-gray-500">Conversations</p>
+                    <h3 class="text-3xl font-bold text-gray-900 mt-2">24,581</h3>
+                    <p class="text-sm text-green-600 mt-1">
+                        <i class="fas fa-arrow-up mr-1"></i>15.2% from last month
+                    </p>
+                </div>
+                <div class="h-12 w-12 rounded-xl bg-purple-100 flex items-center justify-center">
+                    <i class="fas fa-comments text-purple-600 text-xl"></i>
+                </div>
+            </div>
+        </div>
+        
+        <div class="stat-card rounded-2xl p-6">
+            <div class="flex justify-between items-start">
+                <div>
+                    <p class="text-sm font-medium text-gray-500">Storage Used</p>
+                    <h3 class="text-3xl font-bold text-gray-900 mt-2">24.8 GB</h3>
+                    <p class="text-sm text-yellow-600 mt-1">
+                        <i class="fas fa-exclamation-triangle mr-1"></i>82% capacity
+                    </p>
+                </div>
+                <div class="h-12 w-12 rounded-xl bg-yellow-100 flex items-center justify-center">
+                    <i class="fas fa-database text-yellow-600 text-xl"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Quick Actions -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <div class="stat-card rounded-2xl p-6">
+            <h2 class="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h2>
+            <div class="space-y-3">
+                <a href="{{ url_for('admin_add_user') }}" class="flex items-center p-3 rounded-lg hover:bg-gray-50 transition-colors">
+                    <div class="h-10 w-10 rounded-lg bg-blue-100 flex items-center justify-center mr-3">
+                        <i class="fas fa-user-plus text-blue-600"></i>
+                    </div>
+                    <span class="font-medium text-gray-700">Add New User</span>
+                </a>
+                <a href="{{ url_for('admin_users') }}" class="flex items-center p-3 rounded-lg hover:bg-gray-50 transition-colors">
+                    <div class="h-10 w-10 rounded-lg bg-green-100 flex items-center justify-center mr-3">
+                        <i class="fas fa-users-cog text-green-600"></i>
+                    </div>
+                    <span class="font-medium text-gray-700">Manage Users</span>
+                </a>
+                <a href="{{ url_for('admin_chatbots') }}" class="flex items-center p-3 rounded-lg hover:bg-gray-50 transition-colors">
+                    <div class="h-10 w-10 rounded-lg bg-purple-100 flex items-center justify-center mr-3">
+                        <i class="fas fa-robot text-purple-600"></i>
+                    </div>
+                    <span class="font-medium text-gray-700">View Chatbots</span>
+                </a>
+            </div>
+        </div>
+        
+        <div class="stat-card rounded-2xl p-6 md:col-span-2">
+            <h2 class="text-lg font-semibold text-gray-900 mb-4">Recent Activity</h2>
+            <div class="space-y-4">
+                <div class="flex items-start">
+                    <div class="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center mr-3 flex-shrink-0">
+                        <i class="fas fa-user-plus text-blue-600"></i>
+                    </div>
+                    <div>
+                        <p class="font-medium text-gray-900">New user registered</p>
+                        <p class="text-sm text-gray-500">John Doe joined the platform</p>
+                        <p class="text-xs text-gray-400 mt-1">2 minutes ago</p>
+                    </div>
+                </div>
+                
+                <div class="flex items-start">
+                    <div class="h-10 w-10 rounded-full bg-green-100 flex items-center justify-center mr-3 flex-shrink-0">
+                        <i class="fas fa-robot text-green-600"></i>
+                    </div>
+                    <div>
+                        <p class="font-medium text-gray-900">New chatbot created</p>
+                        <p class="text-sm text-gray-500">Customer Support Bot</p>
+                        <p class="text-xs text-gray-400 mt-1">15 minutes ago</p>
+                    </div>
+                </div>
+                
+                <div class="flex items-start">
+                    <div class="h-10 w-10 rounded-full bg-purple-100 flex items-center justify-center mr-3 flex-shrink-0">
+                        <i class="fas fa-file-upload text-purple-600"></i>
+                    </div>
+                    <div>
+                        <p class="font-medium text-gray-900">Document uploaded</p>
+                        <p class="text-sm text-gray-500">Company Policy Manual.pdf</p>
+                        <p class="text-xs text-gray-400 mt-1">1 hour ago</p>
+                    </div>
+                </div>
+                
+                <div class="flex items-start">
+                    <div class="h-10 w-10 rounded-full bg-yellow-100 flex items-center justify-center mr-3 flex-shrink-0">
+                        <i class="fas fa-exclamation-triangle text-yellow-600"></i>
+                    </div>
+                    <div>
+                        <p class="font-medium text-gray-900">Storage warning</p>
+                        <p class="text-sm text-gray-500">Approaching capacity limit</p>
+                        <p class="text-xs text-gray-400 mt-1">3 hours ago</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- System Status -->
+    <div class="stat-card rounded-2xl p-6">
+        <h2 class="text-lg font-semibold text-gray-900 mb-4">System Status</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="p-4 bg-green-50 rounded-lg border border-green-200">
+                <div class="flex items-center">
+                    <div class="h-3 w-3 rounded-full bg-green-500 mr-2"></div>
+                    <span class="font-medium text-green-800">Database</span>
+                </div>
+                <p class="text-sm text-green-700 mt-1">Operational</p>
+            </div>
+            
+            <div class="p-4 bg-green-50 rounded-lg border border-green-200">
+                <div class="flex items-center">
+                    <div class="h-3 w-3 rounded-full bg-green-500 mr-2"></div>
+                    <span class="font-medium text-green-800">Storage</span>
+                </div>
+                <p class="text-sm text-green-700 mt-1">Operational</p>
+            </div>
+            
+            <div class="p-4 bg-yellow-50 rounded-lg border border-yellow-200">
+                <div class="flex items-center">
+                    <div class="h-3 w-3 rounded-full bg-yellow-500 mr-2"></div>
+                    <span class="font-medium text-yellow-800">AI Service</span>
+                </div>
+                <p class="text-sm text-yellow-700 mt-1">Degraded Performance</p>
+            </div>
+        </div>
+    </div>
+{% endblock %}

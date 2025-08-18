@@ -1,0 +1,183 @@
+{% extends "admin-base.html" %}
+
+{% block title %}API Keys{% endblock %}
+{% block page_title %}API Key Management{% endblock %}
+
+{% block content %}
+    <div class="mb-6 flex justify-between items-center">
+        <div>
+            <h2 class="text-2xl font-bold text-gray-900">API Keys</h2>
+            <p class="text-gray-600 mt-1">Manage API keys for external integrations</p>
+        </div>
+        <button class="btn-primary px-4 py-2 bg-blue-600 text-white rounded-lg font-medium flex items-center">
+            <i class="fas fa-plus mr-2"></i>
+            Create API Key
+        </button>
+    </div>
+    
+    <!-- API Key Form (Hidden by default) -->
+    <div id="apiKeyForm" class="stat-card rounded-2xl p-6 mb-6 hidden">
+        <h3 class="text-lg font-semibold text-gray-900 mb-4">Create New API Key</h3>
+        
+        <form class="space-y-4">
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Key Name</label>
+                <input type="text" placeholder="e.g., Analytics Integration" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            </div>
+            
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Permissions</label>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-2">
+                    <div class="flex items-center">
+                        <input type="checkbox" id="read" class="h-4 w-4 text-blue-600 rounded focus:ring-blue-500">
+                        <label for="read" class="ml-2 block text-sm text-gray-700">Read</label>
+                    </div>
+                    <div class="flex items-center">
+                        <input type="checkbox" id="write" class="h-4 w-4 text-blue-600 rounded focus:ring-blue-500">
+                        <label for="write" class="ml-2 block text-sm text-gray-700">Write</label>
+                    </div>
+                    <div class="flex items-center">
+                        <input type="checkbox" id="delete" class="h-4 w-4 text-blue-600 rounded focus:ring-blue-500">
+                        <label for="delete" class="ml-2 block text-sm text-gray-700">Delete</label>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="flex justify-end space-x-3">
+                <button type="button" id="cancelApiKey" class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg font-medium">Cancel</button>
+                <button type="submit" class="btn-primary px-4 py-2 bg-blue-600 text-white rounded-lg font-medium">Create Key</button>
+            </div>
+        </form>
+    </div>
+    
+    <!-- API Keys Table -->
+    <div class="stat-card rounded-2xl p-6">
+        <h3 class="text-lg font-semibold text-gray-900 mb-4">Active API Keys</h3>
+        
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Key Name</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Key</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Permissions</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Created</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    <tr class="table-row">
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="text-sm font-medium text-gray-900">Main API Key</div>
+                            <div class="text-sm text-gray-500">Primary integration key</div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            <div class="flex items-center">
+                                <span class="truncate max-w-xs">sk_live_****************abcd1234</span>
+                                <button class="ml-2 text-blue-600 hover:text-blue-900">
+                                    <i class="fas fa-copy"></i>
+                                </button>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4">
+                            <div class="flex flex-wrap gap-1">
+                                <span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">Read</span>
+                                <span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">Write</span>
+                                <span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">Delete</span>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Jan 15, 2024</td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                Active
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                            <a href="#" class="text-blue-600 hover:text-blue-900 mr-3">Edit</a>
+                            <a href="#" class="text-red-600 hover:text-red-900">Revoke</a>
+                        </td>
+                    </tr>
+                    
+                    <tr class="table-row">
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="text-sm font-medium text-gray-900">Analytics API Key</div>
+                            <div class="text-sm text-gray-500">For analytics dashboard</div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            <div class="flex items-center">
+                                <span class="truncate max-w-xs">sk_live_****************efgh5678</span>
+                                <button class="ml-2 text-blue-600 hover:text-blue-900">
+                                    <i class="fas fa-copy"></i>
+                                </button>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4">
+                            <div class="flex flex-wrap gap-1">
+                                <span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">Read</span>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Jan 14, 2024</td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                Active
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                            <a href="#" class="text-blue-600 hover:text-blue-900 mr-3">Edit</a>
+                            <a href="#" class="text-red-600 hover:text-red-900">Revoke</a>
+                        </td>
+                    </tr>
+                    
+                    <tr class="table-row">
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="text-sm font-medium text-gray-900">Legacy API Key</div>
+                            <div class="text-sm text-gray-500">Old integration key</div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            <div class="flex items-center">
+                                <span class="truncate max-w-xs">sk_live_****************ijkl9012</span>
+                                <button class="ml-2 text-blue-600 hover:text-blue-900">
+                                    <i class="fas fa-copy"></i>
+                                </button>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4">
+                            <div class="flex flex-wrap gap-1">
+                                <span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">Read</span>
+                                <span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">Write</span>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Dec 20, 2023</td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
+                                Expired
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                            <a href="#" class="text-blue-600 hover:text-blue-900 mr-3">Edit</a>
+                            <a href="#" class="text-red-600 hover:text-red-900">Revoke</a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const apiKeyForm = document.getElementById('apiKeyForm');
+            const cancelApiKey = document.getElementById('cancelApiKey');
+            
+            // Show form when create button is clicked
+            document.querySelector('.btn-primary').addEventListener('click', function() {
+                apiKeyForm.classList.remove('hidden');
+            });
+            
+            // Hide form when cancel button is clicked
+            cancelApiKey.addEventListener('click', function() {
+                apiKeyForm.classList.add('hidden');
+            });
+        });
+    </script>
+{% endblock %}
