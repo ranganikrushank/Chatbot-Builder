@@ -1,6 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for, session, jsonify, send_from_directory
 from supabase import create_client, Client
-import os
 from dotenv import load_dotenv
 import magic
 import uuid
@@ -18,6 +17,9 @@ from datetime import datetime
 import tempfile
 import io
 from flask_cors import CORS
+import os
+os.environ['TOKENIZERS_PARALLELISM'] = 'false'  # Prevent tokenizer warnings
+
 
 # Set up logging
 logging.basicConfig(level=logging.DEBUG)
