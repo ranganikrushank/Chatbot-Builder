@@ -9,7 +9,7 @@ click==8.1.7
 # Supabase Integration
 supabase==2.4.0
 python-dotenv==1.0.0
-postgrest==0.13.0
+postgrest==0.15.0
 realtime==1.0.0
 storage3==0.6.0
 
@@ -43,3 +43,4 @@ threadpoolctl==3.1.0
 psutil==5.9.5
 PyYAML==6.0.1
 typing_extensions==4.9.0
+
