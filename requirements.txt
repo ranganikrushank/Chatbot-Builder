@@ -1,5 +1,4 @@
 Flask==2.3.3
-gunicorn==21.2.0
 supabase==2.4.0
 python-dotenv==1.0.0
 python-magic==0.4.27
@@ -12,3 +11,4 @@ faiss-cpu==1.7.4
 pdfplumber==0.10.2
 docx2txt==0.8
 flask-cors==4.0.0
+gunicorn==21.2.0

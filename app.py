@@ -1,5 +1,6 @@
 import os
 os.environ['TOKENIZERS_PARALLELISM'] = 'false'  # Prevent tokenizer warnings
+os.environ['PYTHONHASHSEED'] = '0'  # For reproducible builds
 
 from flask import Flask, render_template, request, redirect, url_for, session, jsonify, send_from_directory
 from supabase import create_client, Client
