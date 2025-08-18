@@ -1,6 +1,6 @@
 import os
-os.environ['TOKENIZERS_PARALLELISM'] = 'false'  # Prevent tokenizer warnings
-os.environ['PYTHONHASHSEED'] = '0'  # For reproducible builds
+os.environ['TOKENIZERS_PARALLELISM'] = 'false'
+os.environ['PYTHONHASHSEED'] = '0'
 
 from flask import Flask, render_template, request, redirect, url_for, session, jsonify, send_from_directory
 from supabase import create_client, Client
@@ -20,18 +20,13 @@ from datetime import datetime
 import tempfile
 import io
 from flask_cors import CORS
-import hashlib
 
 # Set up logging
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
-# Load environment variables
-from dotenv import load_dotenv
-load_dotenv()
-
 app = Flask(__name__)
-app.secret_key = os.getenv('SECRET_KEY')
+app.secret_key = os.getenv('SECRET_KEY', 'your-fallback-secret-key')
 
 CORS(app)
 
@@ -59,97 +54,6 @@ try:
 except Exception as e:
     print(f"❌ Service initialization failed: {e}")
     logger.error(f"Service initialization failed: {e}")
-
-# In-memory storage for chatbot data (for demo - in production, use database)
-chatbot_data_store = {}
-
-def save_chatbot_data_local(chatbot_id, data, user_id, file_info=None):
-    """Save chatbot data to local storage"""
-    try:
-        # Create local storage directory
-        os.makedirs('storage/chatbots', exist_ok=True)
-        user_dir = f"storage/chatbots/{user_id}"
-        os.makedirs(user_dir, exist_ok=True)
-        
-        # Prepare data for storage
-        storage_data = {
-            'id': chatbot_id,
-            'user_id': user_id,
-            'chunks': data.get('chunks', []),
-            'original_text': data.get('original_text', ''),
-            'file_name': data.get('file_name', ''),
-            'created_at': data.get('created_at', str(datetime.now())),
-            'chunk_texts': data.get('chunk_texts', []),
-            'file_info': file_info,
-            'faiss_index': None,
-            'chunk_embeddings': data.get('chunk_embeddings', [])
-        }
-        
-        # Save to local JSON file
-        filepath = f"{user_dir}/{chatbot_id}.json"
-        with open(filepath, 'w') as f:
-            json.dump(storage_data, f, indent=2)
-        
-        logger.debug(f"Saved chatbot data locally: {filepath}")
-        return True
-    except Exception as e:
-        logger.error(f"Failed to save chatbot  {e}")
-        return False
-
-def get_chatbot_data_local(chatbot_id, user_id):
-    """Retrieve chatbot data from local storage"""
-    try:
-        filepath = f"storage/chatbots/{user_id}/{chatbot_id}.json"
-        if os.path.exists(filepath):
-            with open(filepath, 'r') as f:
-                data = json.load(f)
-            
-            # Reconstruct embeddings if needed
-            chunks = data.get('chunks', [])
-            for chunk in chunks:
-                if 'embedding' not in chunk and model:
-                    # Regenerate embedding if missing
-                    content = chunk.get('content', '')
-                    if content:
-                        chunk['embedding'] = model.encode(content).tolist()
-            
-            return {
-                'chunks': chunks,
-                'original_text': data.get('original_text', ''),
-                'file_name': data.get('file_name', ''),
-                'created_at': data.get('created_at', ''),
-                'user_id': data.get('user_id', ''),
-                'faiss_index': None,
-                'chunk_texts': data.get('chunk_texts', [chunk.get('content', '') for chunk in chunks]),
-                'file_info': data.get('file_info', {}),
-                'chunk_embeddings': data.get('chunk_embeddings', [])
-            }
-        return None
-    except Exception as e:
-        logger.error(f"Failed to retrieve chatbot  {e}")
-        return None
-
-def get_user_chatbots_local(user_id):
-    """Get all chatbots for a user"""
-    try:
-        user_dir = f"storage/chatbots/{user_id}"
-        chatbots = []
-        
-        if os.path.exists(user_dir):
-            for filename in os.listdir(user_dir):
-                if filename.endswith('.json'):
-                    filepath = os.path.join(user_dir, filename)
-                    with open(filepath, 'r') as f:
-                        data = json.load(f)
-                        chatbots.append({
-                            'id': data.get('id'),
-                            'file_name': data.get('file_name', ''),
-                            'created_at': data.get('created_at', '')
-                        })
-        return chatbots
-    except Exception as e:
-        logger.error(f"Failed to retrieve user chatbots: {e}")
-        return []
 
 @app.route('/')
 def index():
@@ -220,12 +124,7 @@ def signup():
 def dashboard():
     if 'user_id' not in session:
         return redirect(url_for('login'))
-    
-    # Get user's chatbots
-    user_chatbots = get_user_chatbots_local(session['user_id'])
-    return render_template('dashboard.html', 
-                         user_email=session.get('user_email'), 
-                         user_chatbots=user_chatbots)
+    return render_template('dashboard.html', user_email=session.get('user_email'))
 
 @app.route('/logout')
 def logout():
@@ -267,20 +166,17 @@ def upload_file():
         processed_chunks = process_with_sentence_transformer(extracted_text)
         logger.debug(f"Processed {len(processed_chunks)} chunks")
         
-        # Generate unique ID for this chatbot data
         chatbot_id = str(uuid.uuid4())
         logger.debug(f"Generated chatbot ID: {chatbot_id}")
         
-        # Store processed data with user association
+        # Store processed data
         chatbot_data = {
             'chunks': processed_chunks,
             'original_text': extracted_text[:1000],
             'created_at': str(datetime.now()),
             'file_name': file.filename,
             'user_id': session.get('user_id'),
-            'faiss_index': None,
-            'chunk_texts': [chunk['content'] for chunk in processed_chunks],
-            'chunk_embeddings': [chunk.get('embedding', []) for chunk in processed_chunks]
+            'chunk_texts': [chunk['content'] for chunk in processed_chunks]
         }
         
         # Save to persistent storage
@@ -433,6 +329,68 @@ def extract_key_points(text):
     # Remove common stop words and get important terms
     important_words = [word for word in words[:50] if len(word) > 4][:10]
     return important_words
+
+def save_chatbot_data_local(chatbot_id, data, user_id, file_info=None):
+    """Save chatbot data to local storage"""
+    try:
+        # Create local storage directory
+        os.makedirs('storage/chatbots', exist_ok=True)
+        user_dir = f"storage/chatbots/{user_id}"
+        os.makedirs(user_dir, exist_ok=True)
+        
+        # Prepare data for storage
+        storage_data = {
+            'id': chatbot_id,
+            'user_id': user_id,
+            'chunks': data.get('chunks', []),
+            'original_text': data.get('original_text', ''),
+            'file_name': data.get('file_name', ''),
+            'created_at': data.get('created_at', str(datetime.now())),
+            'chunk_texts': data.get('chunk_texts', []),
+            'file_info': file_info
+        }
+        
+        # Save to local JSON file
+        filepath = f"{user_dir}/{chatbot_id}.json"
+        with open(filepath, 'w') as f:
+            json.dump(storage_data, f, indent=2)
+        
+        logger.debug(f"Saved chatbot data locally: {filepath}")
+        return True
+    except Exception as e:
+        logger.error(f"Failed to save chatbot  {e}")
+        return False
+
+def get_chatbot_data_local(chatbot_id, user_id):
+    """Retrieve chatbot data from local storage"""
+    try:
+        filepath = f"storage/chatbots/{user_id}/{chatbot_id}.json"
+        if os.path.exists(filepath):
+            with open(filepath, 'r') as f:
+                data = json.load(f)
+            
+            # Reconstruct embeddings if needed
+            chunks = data.get('chunks', [])
+            for chunk in chunks:
+                if 'embedding' not in chunk and model:
+                    # Regenerate embedding if missing
+                    content = chunk.get('content', '')
+                    if content:
+                        chunk['embedding'] = model.encode(content).tolist()
+            
+            return {
+                'chunks': chunks,
+                'original_text': data.get('original_text', ''),
+                'file_name': data.get('file_name', ''),
+                'created_at': data.get('created_at', ''),
+                'user_id': data.get('user_id', ''),
+                'chunk_texts': data.get('chunk_texts', [chunk.get('content', '') for chunk in chunks]),
+                'file_info': data.get('file_info', {})
+            }
+        return None
+    except Exception as e:
+        logger.error(f"Failed to retrieve chatbot  {e}")
+        return None
 
 @app.route('/create-chatbot', methods=['POST'])
 def create_chatbot():
