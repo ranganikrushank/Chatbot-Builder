@@ -340,10 +340,10 @@ window.chatbotConfig = {{
     id: '{chatbot_id}',
     name: '{chatbot_name}',
     websiteUrl: '{website_url}',
-    apiUrl: 'https://your-app-name.onrender.com'  // UPDATE AFTER DEPLOYMENT
+    apiUrl: 'https://chatbot-builder.atlanciaworldwide.com/'
 }};
 </script>
-<script src="https://your-app-name.onrender.com/static/js/smart-chatbot.js"></script>
+<script src="https://chatbot-builder.atlanciaworldwide.com/static/js/smart-chatbot.js"></script>
 <!-- End Smart Chatbot Embed Code -->"""
     
     return jsonify({
