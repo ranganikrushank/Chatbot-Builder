@@ -163,28 +163,28 @@ def admin_dashboard():
 # --- End Admin Routes ---
 
 
-@app.route('/login', methods=['GET', 'POST']) # Keep original user login
+@app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        email = request.form.get('email') # Use .get() for safer access
+        email = request.form.get('email')
         password = request.form.get('password')
 
         if not email or not password:
-             return render_template('login.html', error='Email and password are required'), 400
+            return render_template('login.html', error='Email and password are required'), 400
 
         try:
             if not supabase:
                 logger.warning("Supabase client not initialized")
                 return render_template('login.html', error='Service unavailable'), 500
 
-            logger.info(f"Attempting user login for: {email}")
+            logger.info(f"Attempting login for user: {email}")
             response = supabase.auth.sign_in_with_password({
                 'email': email,
                 'password': password
             })
 
             user = response.user
-            logger.info(f"✅ User login successful for: {user.email}")
+            logger.info(f"✅ Login successful for user: {user.email}")
 
             # --- Fetch User Role from Supabase ---
             # Make sure you have created the 'profiles' table as discussed
@@ -217,15 +217,14 @@ def login():
 
         except Exception as e:
             error_message = str(e)
-            logger.error(f"User login error: {error_message}")
+            logger.error(f"Login error: {error_message}")
 
-            # Corrected variable name from 'error_msg' to 'error_message'
             if "Invalid credentials" in error_message or "Incorrect password" in error_message:
                 return render_template('login.html', error='Invalid email or password'), 401
-            elif "Email not found" in error_message: # Corrected variable name
+            elif "Email not found" in error_message:
                  return render_template('login.html', error='Email not registered'), 401
             else:
-                logger.error(f"Unexpected user login error: {e}")
+                logger.error(f"Unexpected login error: {e}")
                 return render_template('login.html', error='Login failed. Please check your internet connection.'), 500
 
     return render_template('login.html')
@@ -237,8 +236,6 @@ def signup():
     if request.method == 'POST':
         email = request.form.get('email')
         password = request.form.get('password')
-        # Optional: Get name from signup form
-        name = request.form.get('name', '').strip() # Add 'name' input to your signup.html
 
         if not email or not password:
             return render_template('signup.html', error='Email and password are required'), 400
@@ -246,51 +243,31 @@ def signup():
         try:
             if not supabase:
                 logger.warning("Supabase client not initialized")
-                return render_template('signup.html', error='Service unavailable'), 500
+                return render_template('signup.html', error='Supabase service not available'), 500
 
-            logger.info(f"Attempting signup for: {email}")
-            # 1. Supabase Auth creates the user in auth.users
             response = supabase.auth.sign_up({
                 'email': email,
                 'password': password
             })
 
             user = response.user
-            logger.info(f"✅ Signup successful for: {user.email}")
+            logger.info(f"✅ User created: {user.email}")
 
-            # 2. Create the profile in public.profiles
+            # Create profile in your database
             try:
-                # Insert the profile data
-                profile_data = {
-                    "id": user.id,          # Link to auth.users.id
-                    "email": user.email,    # Store email
-                    "name": name if name else None, # Store name if provided
-                    "role": "user"          # Default role is 'user'
-                }
-                # Use 'select()' to return the inserted data, helps confirm success
-                profile_response = supabase.table("profiles").insert(profile_data).select().execute()
-                logger.info(f"✅ Profile created for user: {user.email}")
-                # Log the inserted profile data (optional, for debugging)
-                # logger.debug(f"Profile data: {profile_response.data}")
+                supabase.table("profiles").insert({
+                    "id": user.id,
+                    "email": user.email,
+                    "role": "user"
+                }).execute()
+                logger.info(f"✅ Profile created for {user.email}")
+            except Exception as db_error:
+                 logger.error(f"Could not insert user metadata: {db_error}")
 
-            except Exception as profile_error:
-                 error_msg = str(profile_error)
-                 logger.error(f"❌ Failed to create profile for {user.email}: {error_msg}")
-                 # Decide how to handle this:
-                 # Option 1: Delete the auth user (complex, requires admin privileges)
-                 # Option 2: Allow signup but warn user profile creation failed (simpler)
-                 # Option 3: Show error and prevent signup completion
-                 # Here, we'll warn but proceed (user might need manual profile setup)
-                 # You might want to show a different success page indicating profile issue
-                 # return render_template('signup.html', error='Account created, but profile setup failed. Please contact support.'), 500
-
-
-            # 3. Log the user in automatically (common practice)
             session['user_id'] = user.id
             session['user_email'] = user.email
-            session['user_role'] = 'user' # We just set the default role above
-            logger.debug(f"Auto-login after signup for user: {user.email}")
-            return redirect(url_for('dashboard')) # Redirect to standard user dashboard
+            session['user_role'] = 'user'
+            return redirect(url_for('dashboard'))
 
         except Exception as e:
             error_message = str(e)
@@ -301,7 +278,6 @@ def signup():
             elif "Email already exists" in error_message:
                 return render_template('signup.html', error='This email is already registered'), 400
             else:
-                logger.error(f"Unexpected signup error: {e}")
                 return render_template('signup.html', error='Signup failed. Please check your internet connection.'), 500
 
     return render_template('signup.html')
